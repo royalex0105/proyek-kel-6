@@ -394,5 +394,4 @@ def main():
         st.session_state['username'] = ""
         st.rerun()
 
-if _name_ == "_main_":
-    main()
+main()
