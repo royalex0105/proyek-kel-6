@@ -304,13 +304,13 @@ def laporan():
     tabs = st.tabs(["Ringkasan", "Jurnal Umum", "Buku Besar", "Laba Rugi", "Neraca"])
 
 
-  with tabs[0]:
-    total_pemasukan = pemasukan_df[
-        (pemasukan_df['Tanggal'] >= pd.to_datetime(mulai)) & 
-        (pemasukan_df['Tanggal'] <= pd.to_datetime(akhir))
-    ]['Jumlah'].sum() if not pemasukan_df.empty else 0
-
-    total_pengeluaran = pengeluaran_df[
+     with tabs[0]:
+         total_pemasukan = pemasukan_df[
+         (pemasukan_df['Tanggal'] >= pd.to_datetime(mulai)) & 
+         (pemasukan_df['Tanggal'] <= pd.to_datetime(akhir))
+         ]['Jumlah'].sum() if not pemasukan_df.empty else 0
+         
+         total_pengeluaran = pengeluaran_df[
         (pengeluaran_df['Tanggal'] >= pd.to_datetime(mulai)) & 
         (pengeluaran_df['Tanggal'] <= pd.to_datetime(akhir))
     ]['Jumlah'].sum() if not pengeluaran_df.empty else 0
