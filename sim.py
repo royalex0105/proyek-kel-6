@@ -303,20 +303,28 @@ def laporan():
 
     tabs = st.tabs(["Ringkasan", "Jurnal Umum", "Buku Besar", "Laba Rugi", "Neraca"])
 
-    with tabs[0]:
-        total_pemasukan = pemasukan_df[(pemasukan_df['Tanggal'] >= pd.to_datetime(mulai)) & (pemasukan_df['Tanggal'] <= pd.to_datetime(akhir))]['Jumlah'].sum() if not pemasukan_df.empty else 0
-        total_pengeluaran = pengeluaran_df[(pengeluaran_df['Tanggal'] >= pd.to_datetime(mulai)) & (pengeluaran_df['Tanggal'] <= pd.to_datetime(akhir))]['Jumlah'].sum() if not pengeluaran_df.empty else 0
+   with tabs[0]:
+    total_pemasukan = pemasukan_df[
+        (pemasukan_df['Tanggal'] >= pd.to_datetime(mulai)) & 
+        (pemasukan_df['Tanggal'] <= pd.to_datetime(akhir))
+    ]['Jumlah'].sum() if not pemasukan_df.empty else 0
 
-        st.metric("Total Pemasukan", f"Rp {total_pemasukan:,.0f}")
-        st.metric("Total Pengeluaran", f"Rp {total_pengeluaran:,.0f}")
+    total_pengeluaran = pengeluaran_df[
+        (pengeluaran_df['Tanggal'] >= pd.to_datetime(mulai)) & 
+        (pengeluaran_df['Tanggal'] <= pd.to_datetime(akhir))
+    ]['Jumlah'].sum() if not pengeluaran_df.empty else 0
 
-     if total_pemasukan > 0 or total_pengeluaran > 0:
-         df_sum = pd.DataFrame({
-             'Kategori': ['Pemasukan', 'Pengeluaran'],
-             'Jumlah': [total_pemasukan, total_pengeluaran]
-         })
-         fig = px.pie(df_sum, values='Jumlah', names='Kategori')
-         st.plotly_chart(fig)  
+    st.metric("Total Pemasukan", f"Rp {total_pemasukan:,.0f}")
+    st.metric("Total Pengeluaran", f"Rp {total_pengeluaran:,.0f}")
+
+    if total_pemasukan > 0 or total_pengeluaran > 0:
+        df_sum = pd.DataFrame({
+            'Kategori': ['Pemasukan', 'Pengeluaran'],
+            'Jumlah': [total_pemasukan, total_pengeluaran]
+        })
+        fig = px.pie(df_sum, values='Jumlah', names='Kategori')
+        st.plotly_chart(fig)
+
 
     with tabs[1]:
         st.markdown("### Jurnal Umum")
