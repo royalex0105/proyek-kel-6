@@ -310,13 +310,14 @@ def laporan():
         st.metric("Total Pemasukan", f"Rp {total_pemasukan:,.0f}")
         st.metric("Total Pengeluaran", f"Rp {total_pengeluaran:,.0f}")
 
-        if total_pemasukan > 0 or total_pengeluaran > 0:
-            df_sum = pd.DataFrame({
-                'Kategori': ['Pemasukan', 'Pengeluaran'],
-                'Jumlah': [total_pemasukan, total_pengeluaran]
-            })
-            fig = px.pie(df_sum, values='Jumlah', names='Kategori')
-            
+       if total_pemasukan > 0 or total_pengeluaran > 0:
+    df_sum = pd.DataFrame({
+        'Kategori': ['Pemasukan', 'Pengeluaran'],
+        'Jumlah': [total_pemasukan, total_pengeluaran]
+    })
+    fig = px.pie(df_sum, values='Jumlah', names='Kategori')
+    st.plotly_chart(fig) 
+
 
     with tabs[1]:
         st.markdown("### Jurnal Umum")
