@@ -302,9 +302,9 @@ def laporan():
     jurnal_df = jurnal_df[(jurnal_df['Tanggal'] >= pd.to_datetime(mulai)) & (jurnal_df['Tanggal'] <= pd.to_datetime(akhir))]
 
     tabs = st.tabs(["Ringkasan", "Jurnal Umum", "Buku Besar", "Laba Rugi", "Neraca"])
-
-
-     with tabs[0]:
+    
+    
+    with tabs[0]:
          total_pemasukan = pemasukan_df[
          (pemasukan_df['Tanggal'] >= pd.to_datetime(mulai)) & 
          (pemasukan_df['Tanggal'] <= pd.to_datetime(akhir))
