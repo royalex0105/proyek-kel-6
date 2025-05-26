@@ -173,40 +173,6 @@ def pemasukan():
         for j in jurnal:
             append_data(j, "jurnal.csv", username)
         st.success("✅ Pemasukan berhasil disimpan.")
-        st.rerun()
-
-   
-# --- Tampilkan Riwayat dan Hapus ---
- 
-st.markdown("### Riwayat Pemasukan")
-
-try:
-    df_pemasukan = load_data("pemasukan.csv", st.session_state['username'])
-
-    if df_pemasukan.empty:
-        st.info("Belum ada data pemasukan.")
-    else:
-        df_pemasukan_display = df_pemasukan[["Tanggal", "Sumber", "Jumlah", "Metode", "Keterangan"]].copy()
-        df_pemasukan_display.index.name = "Index"
-        st.dataframe(df_pemasukan_display)
-
-        index_to_delete = st.number_input(
-            "Masukkan Index Transaksi untuk Dihapus",
-            min_value=0,
-            max_value=len(df_pemasukan_display) - 1,
-            step=1,
-            key="del_pemasukan"
-        )
-
-        if st.button("🗑️ Hapus Transaksi Ini"):
-            if hapus_transaksi("pemasukan", index_to_delete, st.session_state['username']):
-                st.success("Transaksi berhasil dihapus dan jurnal dibalik.")
-                st.rerun()
-            else:
-                st.error("Gagal menghapus transaksi.")
-except Exception as e:
-    st.error(f"Gagal memuat data pemasukan: {e}")
-
 
 # ---------------- Fungsi Pengeluaran ----------------
 
@@ -214,7 +180,7 @@ def pengeluaran():
     st.subheader("Tambah Pengeluaran")
     tanggal = st.date_input("Tanggal", datetime.now())
     kategori = st.selectbox("Kategori Utama", list(kategori_pengeluaran.keys()))
-    sub_kategori = st.selectbox("Sub Kategori", kategori_pengeluaran.get(kategori, []))
+    sub_kategori = st.selectbox("Sub Kategori", kategori_pengeluaran[kategori])
     jumlah = st.number_input("Jumlah (Rp)", min_value=0)
     deskripsi = st.text_area("Keterangan (opsional)")
     metode = st.radio("Metode Pembayaran", ["Tunai", "Transfer", "Utang", "Pelunasan Utang"])
@@ -246,65 +212,6 @@ def pengeluaran():
         for j in jurnal:
             append_data(j, "jurnal.csv", username)
         st.success("✅ Pengeluaran berhasil disimpan.")
-        st.rerun()
-
-    # --- Tampilkan Riwayat dan Hapus ---
-
-st.markdown("### Riwayat Pengeluaran")
-
-try:
-    df_pengeluaran = load_data("pengeluaran.csv", st.session_state['username'])
-    if df_pengeluaran.empty:
-        st.info("Belum ada data pengeluaran.")
-    else:
-        df_pengeluaran_display = df_pengeluaran[["Tanggal", "Kategori", "Sub Kategori", "Jumlah", "Metode", "Keterangan"]].copy()
-        df_pengeluaran_display.index.name = "Index"
-        st.dataframe(df_pengeluaran_display)
-
-        index_to_delete = st.number_input(
-            "Masukkan Index Transaksi untuk Dihapus",
-            min_value=0,
-            max_value=len(df_pengeluaran_display)-1,
-            step=1,
-            key="del_pengeluaran"
-        )
-        if st.button("🗑️ Hapus Pengeluaran Ini"):
-            if hapus_transaksi("pengeluaran", index_to_delete, st.session_state['username']):
-                st.success("Transaksi berhasil dihapus dan jurnal dibalik.")
-                st.rerun()
-            else:
-                st.error("Gagal menghapus transaksi.")
-except Exception as e:
-    st.error(f"Gagal memuat data pengeluaran: {e}")
-
-
-   # ----------------- Hapus Transaksi -----------------
-st.markdown("### Riwayat Pengeluaran")
-df_pengeluaran = load_data("pengeluaran.csv", st.session_state['username'])
-
-if not df_pengeluaran.empty:
-    df_pengeluaran_display = df_pengeluaran[["Tanggal", "Kategori", "Sub Kategori", "Jumlah", "Metode", "Keterangan"]].copy()
-    df_pengeluaran_display.index.name = "Index"
-    st.dataframe(df_pengeluaran_display)
-
-    max_index = len(df_pengeluaran_display) - 1
-    index_to_delete = st.number_input(
-        "Masukkan Index untuk Dihapus",
-        min_value=0,
-        max_value=max_index,
-        step=1,
-        key="del_pengeluaran"
-    )
-
-    if st.button("🗑️ Hapus Pengeluaran Ini"):
-        if hapus_transaksi("pengeluaran", index_to_delete, st.session_state['username']):
-            st.success("Pengeluaran berhasil dihapus dan jurnal dibalik.")
-            st.rerun()
-        else:
-            st.error("Gagal menghapus transaksi.")
-else:
-    st.info("Belum ada data pengeluaran.")
-
 
 # ---------------- Fungsi Hapus Transaksi ----------------
 
@@ -395,31 +302,21 @@ def laporan():
     jurnal_df = jurnal_df[(jurnal_df['Tanggal'] >= pd.to_datetime(mulai)) & (jurnal_df['Tanggal'] <= pd.to_datetime(akhir))]
 
     tabs = st.tabs(["Ringkasan", "Jurnal Umum", "Buku Besar", "Laba Rugi", "Neraca"])
-    
-    
+
     with tabs[0]:
-         total_pemasukan = pemasukan_df[
-         (pemasukan_df['Tanggal'] >= pd.to_datetime(mulai)) & 
-         (pemasukan_df['Tanggal'] <= pd.to_datetime(akhir))
-         ]['Jumlah'].sum() if not pemasukan_df.empty else 0
-         
-         total_pengeluaran = pengeluaran_df[
-        (pengeluaran_df['Tanggal'] >= pd.to_datetime(mulai)) & 
-        (pengeluaran_df['Tanggal'] <= pd.to_datetime(akhir))
-    ]['Jumlah'].sum() if not pengeluaran_df.empty else 0
+        total_pemasukan = pemasukan_df[(pemasukan_df['Tanggal'] >= pd.to_datetime(mulai)) & (pemasukan_df['Tanggal'] <= pd.to_datetime(akhir))]['Jumlah'].sum() if not pemasukan_df.empty else 0
+        total_pengeluaran = pengeluaran_df[(pengeluaran_df['Tanggal'] >= pd.to_datetime(mulai)) & (pengeluaran_df['Tanggal'] <= pd.to_datetime(akhir))]['Jumlah'].sum() if not pengeluaran_df.empty else 0
 
-    st.metric("Total Pemasukan", f"Rp {total_pemasukan:,.0f}")
-    st.metric("Total Pengeluaran", f"Rp {total_pengeluaran:,.0f}")
+        st.metric("Total Pemasukan", f"Rp {total_pemasukan:,.0f}")
+        st.metric("Total Pengeluaran", f"Rp {total_pengeluaran:,.0f}")
 
-    if total_pemasukan > 0 or total_pengeluaran > 0:
-        df_sum = pd.DataFrame({
-            'Kategori': ['Pemasukan', 'Pengeluaran'],
-            'Jumlah': [total_pemasukan, total_pengeluaran]
-        })
-        fig = px.pie(df_sum, values='Jumlah', names='Kategori')
-        st.plotly_chart(fig)
-
-
+        if total_pemasukan > 0 or total_pengeluaran > 0:
+            df_sum = pd.DataFrame({
+                'Kategori': ['Pemasukan', 'Pengeluaran'],
+                'Jumlah': [total_pemasukan, total_pengeluaran]
+            })
+            fig = px.pie(df_sum, values='Jumlah', names='Kategori')
+            
 
     with tabs[1]:
         st.markdown("### Jurnal Umum")
@@ -462,16 +359,13 @@ def laporan():
 # ---------------- UI Utama ----------------
 
 def main():
-    st.set_page_config(layout="wide")  # Pastikan ada konfigurasi dasar
-   
-    # Logo kecil di header (ganti dengan URL/logo sendiri jika ada)
+    st.set_page_config(layout="wide")
     st.sidebar.title("Menu")
-    
+
     logged_in = login_register()
     if not logged_in:
         return
 
-    
     menu = st.sidebar.radio("Pilih Menu", ["Beranda", "Pemasukan", "Pengeluaran", "Laporan", "Logout"])
 
     if menu == "Beranda":
@@ -490,11 +384,13 @@ def main():
         pengeluaran()
 
     elif menu == "Laporan":
-        laporan() # Grafik Plotly hanya ada di fungsi laporan()
+        laporan()
 
     elif menu == "Logout":
         st.session_state['logged_in'] = False
         st.session_state['username'] = ""
         st.rerun()
 
+# Jalankan langsung (tanpa if __name__ == "__main__")
 main()
+
