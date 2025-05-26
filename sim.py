@@ -203,13 +203,22 @@ else:
     st.info("Belum ada data pemasukan.")
 
 
+
 # ---------------- Fungsi Pengeluaran ----------------
 
 def pengeluaran():
     st.subheader("Tambah Pengeluaran")
     tanggal = st.date_input("Tanggal", datetime.now())
     kategori = st.selectbox("Kategori Utama", list(kategori_pengeluaran.keys()))
-    sub_kategori = st.selectbox("Sub Kategori", kategori_pengeluaran[kategori])
+    
+    # Pastikan kategori valid
+    sub_kategori_list = kategori_pengeluaran.get(kategori, [])
+    if not sub_kategori_list:
+        st.warning("Kategori tidak valid atau belum memiliki sub kategori.")
+        return
+
+    sub_kategori = st.selectbox("Sub Kategori", sub_kategori_list)
+
     jumlah = st.number_input("Jumlah (Rp)", min_value=0)
     deskripsi = st.text_area("Keterangan (opsional)")
     metode = st.radio("Metode Pembayaran", ["Tunai", "Transfer", "Utang", "Pelunasan Utang"])
@@ -218,6 +227,7 @@ def pengeluaran():
         if jumlah <= 0:
             st.error("Jumlah tidak boleh 0.")
             return
+
         waktu = tanggal.strftime("%Y-%m-%d %H:%M:%S")
         username = st.session_state['username']
         data = {
@@ -230,6 +240,8 @@ def pengeluaran():
             "Username": username
         }
         append_data(data, "pengeluaran.csv", username)
+
+        # Buat jurnal hanya setelah validasi berhasil
         akun_kredit = {
             "Tunai": "Kas",
             "Transfer": "Bank",
@@ -238,10 +250,13 @@ def pengeluaran():
         }[metode]
         akun_debit = sub_kategori if metode != "Pelunasan Utang" else "Utang Dagang"
         jurnal = buat_jurnal(waktu, akun_debit, akun_kredit, jumlah, deskripsi)
+
         for j in jurnal:
             append_data(j, "jurnal.csv", username)
+
         st.success("✅ Pengeluaran berhasil disimpan.")
         st.rerun()
+
 
    # ----------------- Hapus Transaksi -----------------
 st.markdown("### Riwayat Pengeluaran")
