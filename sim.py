@@ -173,6 +173,23 @@ def pemasukan():
         for j in jurnal:
             append_data(j, "jurnal.csv", username)
         st.success("✅ Pemasukan berhasil disimpan.")
+        
+        st.markdown("### Riwayat Pemasukan")
+        df_pemasukan = load_data("pemasukan.csv", st.session_state['username'])
+        
+        if not df_pemasukan.empty:
+            df_pemasukan_display = df_pemasukan.copy()
+            df_pemasukan_display.index.name = "Index"
+            st.dataframe(df_pemasukan_display)
+
+    index_to_delete = st.number_input("Masukkan Index Transaksi untuk Dihapus", min_value=0, max_value=len(df_pemasukan)-1, step=1)
+    if st.button("🗑️ Hapus Transaksi Ini"):
+        if hapus_transaksi("pemasukan", index_to_delete, st.session_state['username']):
+            st.success("Transaksi berhasil dihapus dan jurnal dibalik.")
+            st.rerun()
+        else:
+            st.error("Gagal menghapus transaksi.")
+
 
 # ---------------- Fungsi Pengeluaran ----------------
 
@@ -212,6 +229,23 @@ def pengeluaran():
         for j in jurnal:
             append_data(j, "jurnal.csv", username)
         st.success("✅ Pengeluaran berhasil disimpan.")
+        
+        st.markdown("### Riwayat Pengeluaran")
+        df_pengeluaran = load_data("pengeluaran.csv", st.session_state['username'])
+        
+        if not df_pengeluaran.empty:
+            df_pengeluaran_display = df_pengeluaran.copy()
+            df_pengeluaran_display.index.name = "Index"
+            st.dataframe(df_pengeluaran_display)
+
+    index_to_delete = st.number_input("Masukkan Index Transaksi untuk Dihapus", min_value=0, max_value=len(df_pengeluaran)-1, step=1, key="del_pengeluaran")
+    if st.button("🗑️ Hapus Pengeluaran Ini"):
+        if hapus_transaksi("pengeluaran", index_to_delete, st.session_state['username']):
+            st.success("Transaksi berhasil dihapus dan jurnal dibalik.")
+            st.rerun()
+        else:
+            st.error("Gagal menghapus transaksi.")
+
 
 # ---------------- Fungsi Hapus Transaksi ----------------
 
