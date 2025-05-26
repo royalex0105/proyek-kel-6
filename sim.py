@@ -175,11 +175,14 @@ def pemasukan():
         st.success("✅ Pemasukan berhasil disimpan.")
         st.rerun()
 
-    # --- Tampilkan Riwayat dan Hapus ---
-   st.markdown("### Riwayat Pemasukan")
+   
+# --- Tampilkan Riwayat dan Hapus ---
+ 
+st.markdown("### Riwayat Pemasukan")
 
 try:
     df_pemasukan = load_data("pemasukan.csv", st.session_state['username'])
+
     if df_pemasukan.empty:
         st.info("Belum ada data pemasukan.")
     else:
@@ -190,10 +193,11 @@ try:
         index_to_delete = st.number_input(
             "Masukkan Index Transaksi untuk Dihapus",
             min_value=0,
-            max_value=len(df_pemasukan_display)-1,
+            max_value=len(df_pemasukan_display) - 1,
             step=1,
             key="del_pemasukan"
         )
+
         if st.button("🗑️ Hapus Transaksi Ini"):
             if hapus_transaksi("pemasukan", index_to_delete, st.session_state['username']):
                 st.success("Transaksi berhasil dihapus dan jurnal dibalik.")
