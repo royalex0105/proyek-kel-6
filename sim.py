@@ -176,32 +176,32 @@ def pemasukan():
         st.rerun()
 
     # --- Tampilkan Riwayat dan Hapus ---
-    st.markdown("### Riwayat Pemasukan")
-    try:
-        df_pemasukan = load_data("pemasukan.csv", st.session_state['username'])
-        if not df_pemasukan.empty:
-            df_pemasukan_display = df_pemasukan[["Tanggal", "Sumber", "Jumlah", "Metode", "Keterangan"]].copy()
-            df_pemasukan_display.index.name = "Index"
-            st.dataframe(df_pemasukan_display)
+   st.markdown("### Riwayat Pemasukan")
 
-            index_to_delete = st.number_input(
-                "Masukkan Index Transaksi untuk Dihapus",
-                min_value=0,
-                max_value=len(df_pemasukan_display) - 1,
-                step=1,
-                key="del_pemasukan"
-            )
+try:
+    df_pemasukan = load_data("pemasukan.csv", st.session_state['username'])
+    if df_pemasukan.empty:
+        st.info("Belum ada data pemasukan.")
+    else:
+        df_pemasukan_display = df_pemasukan[["Tanggal", "Sumber", "Jumlah", "Metode", "Keterangan"]].copy()
+        df_pemasukan_display.index.name = "Index"
+        st.dataframe(df_pemasukan_display)
 
-            if st.button("🗑️ Hapus Transaksi Ini"):
-                if hapus_transaksi("pemasukan", index_to_delete, st.session_state['username']):
-                    st.success("Transaksi berhasil dihapus dan jurnal dibalik.")
-                    st.rerun()
-                else:
-                    st.error("Gagal menghapus transaksi.")
-        else:
-            st.info("Belum ada data pemasukan.")
-    except Exception as e:
-        st.error(f"Terjadi error saat memuat data pemasukan: {e}")
+        index_to_delete = st.number_input(
+            "Masukkan Index Transaksi untuk Dihapus",
+            min_value=0,
+            max_value=len(df_pemasukan_display)-1,
+            step=1,
+            key="del_pemasukan"
+        )
+        if st.button("🗑️ Hapus Transaksi Ini"):
+            if hapus_transaksi("pemasukan", index_to_delete, st.session_state['username']):
+                st.success("Transaksi berhasil dihapus dan jurnal dibalik.")
+                st.rerun()
+            else:
+                st.error("Gagal menghapus transaksi.")
+except Exception as e:
+    st.error(f"Gagal memuat data pemasukan: {e}")
 
 
 # ---------------- Fungsi Pengeluaran ----------------
@@ -245,32 +245,32 @@ def pengeluaran():
         st.rerun()
 
     # --- Tampilkan Riwayat dan Hapus ---
-    st.markdown("### Riwayat Pengeluaran")
-    try:
-        df_pengeluaran = load_data("pengeluaran.csv", st.session_state['username'])
-        if not df_pengeluaran.empty:
-            df_pengeluaran_display = df_pengeluaran[["Tanggal", "Kategori", "Sub Kategori", "Jumlah", "Metode", "Keterangan"]].copy()
-            df_pengeluaran_display.index.name = "Index"
-            st.dataframe(df_pengeluaran_display)
+  st.markdown("### Riwayat Pengeluaran")
 
-            index_to_delete = st.number_input(
-                "Masukkan Index Transaksi untuk Dihapus",
-                min_value=0,
-                max_value=len(df_pengeluaran_display) - 1,
-                step=1,
-                key="del_pengeluaran"
-            )
+try:
+    df_pengeluaran = load_data("pengeluaran.csv", st.session_state['username'])
+    if df_pengeluaran.empty:
+        st.info("Belum ada data pengeluaran.")
+    else:
+        df_pengeluaran_display = df_pengeluaran[["Tanggal", "Kategori", "Sub Kategori", "Jumlah", "Metode", "Keterangan"]].copy()
+        df_pengeluaran_display.index.name = "Index"
+        st.dataframe(df_pengeluaran_display)
 
-            if st.button("🗑️ Hapus Pengeluaran Ini"):
-                if hapus_transaksi("pengeluaran", index_to_delete, st.session_state['username']):
-                    st.success("Pengeluaran berhasil dihapus dan jurnal dibalik.")
-                    st.rerun()
-                else:
-                    st.error("Gagal menghapus transaksi.")
-        else:
-            st.info("Belum ada data pengeluaran.")
-    except Exception as e:
-        st.error(f"Terjadi error saat memuat data pengeluaran: {e}")
+        index_to_delete = st.number_input(
+            "Masukkan Index Transaksi untuk Dihapus",
+            min_value=0,
+            max_value=len(df_pengeluaran_display)-1,
+            step=1,
+            key="del_pengeluaran"
+        )
+        if st.button("🗑️ Hapus Pengeluaran Ini"):
+            if hapus_transaksi("pengeluaran", index_to_delete, st.session_state['username']):
+                st.success("Transaksi berhasil dihapus dan jurnal dibalik.")
+                st.rerun()
+            else:
+                st.error("Gagal menghapus transaksi.")
+except Exception as e:
+    st.error(f"Gagal memuat data pengeluaran: {e}")
 
 
    # ----------------- Hapus Transaksi -----------------
