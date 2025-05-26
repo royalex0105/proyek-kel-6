@@ -174,25 +174,26 @@ def pemasukan():
             append_data(j, "jurnal.csv", username)
         st.success("✅ Pemasukan berhasil disimpan.")
         
-        # --- Menampilkan Riwayat Pemasukan & Hapus Transaksi ---
+
+# ----------------- Hapus Transaksi -----------------
 st.markdown("### Riwayat Pemasukan")
 df_pemasukan = load_data("pemasukan.csv", st.session_state['username'])
 
 if not df_pemasukan.empty:
-    df_pemasukan_display = df_pemasukan.copy()
+    df_pemasukan_display = df_pemasukan[["Tanggal", "Sumber", "Jumlah", "Metode", "Keterangan"]].copy()
     df_pemasukan_display.index.name = "Index"
     st.dataframe(df_pemasukan_display)
 
-    # Input hanya jika data ada
+    max_index = len(df_pemasukan_display) - 1
     index_to_delete = st.number_input(
-        "Masukkan Index Transaksi untuk Dihapus",
+        "Masukkan Index untuk Dihapus",
         min_value=0,
-        max_value=len(df_pemasukan_display) - 1,
+        max_value=max_index,
         step=1,
         key="del_pemasukan"
     )
 
-    if st.button("🗑️ Hapus Pemasukan Ini"):
+    if st.button("🗑️ Hapus Transaksi Ini"):
         if hapus_transaksi("pemasukan", index_to_delete, st.session_state['username']):
             st.success("Transaksi berhasil dihapus dan jurnal dibalik.")
             st.rerun()
@@ -200,7 +201,6 @@ if not df_pemasukan.empty:
             st.error("Gagal menghapus transaksi.")
 else:
     st.info("Belum ada data pemasukan.")
-
 
 
 # ---------------- Fungsi Pengeluaran ----------------
@@ -243,32 +243,32 @@ def pengeluaran():
         st.success("✅ Pengeluaran berhasil disimpan.")
         st.rerun()
 
-    # ----------------- Hapus Transaksi -----------------
-    st.markdown("### Riwayat Pengeluaran")
-    df_pengeluaran = load_data("pengeluaran.csv", st.session_state['username'])
+   # ----------------- Hapus Transaksi -----------------
+st.markdown("### Riwayat Pengeluaran")
+df_pengeluaran = load_data("pengeluaran.csv", st.session_state['username'])
 
-    if not df_pengeluaran.empty:
-        df_pengeluaran_display = df_pengeluaran[["Tanggal", "Kategori", "Sub Kategori", "Jumlah", "Metode", "Keterangan"]].copy()
-        df_pengeluaran_display.index.name = "Index"
-        st.dataframe(df_pengeluaran_display)
+if not df_pengeluaran.empty:
+    df_pengeluaran_display = df_pengeluaran[["Tanggal", "Kategori", "Sub Kategori", "Jumlah", "Metode", "Keterangan"]].copy()
+    df_pengeluaran_display.index.name = "Index"
+    st.dataframe(df_pengeluaran_display)
 
-        index_to_delete = st.number_input("Masukkan Index untuk Dihapus", min_value=0, max_value=len(df_pengeluaran)-1, step=1, key="del_pengeluaran")
-        if st.button("🗑️ Hapus Pengeluaran Ini"):
-            if hapus_transaksi("pengeluaran", index_to_delete, st.session_state['username']):
-                st.success("Pengeluaran berhasil dihapus dan jurnal dibalik.")
-                st.rerun()
-            else:
-                st.error("Gagal menghapus transaksi.")
-    else:
-        st.info("Belum ada data pengeluaran.")
+    max_index = len(df_pengeluaran_display) - 1
+    index_to_delete = st.number_input(
+        "Masukkan Index untuk Dihapus",
+        min_value=0,
+        max_value=max_index,
+        step=1,
+        key="del_pengeluaran"
+    )
 
-    index_to_delete = st.number_input("Masukkan Index Transaksi untuk Dihapus", min_value=0, max_value=len(df_pengeluaran)-1, step=1, key="del_pengeluaran")
     if st.button("🗑️ Hapus Pengeluaran Ini"):
         if hapus_transaksi("pengeluaran", index_to_delete, st.session_state['username']):
-            st.success("Transaksi berhasil dihapus dan jurnal dibalik.")
+            st.success("Pengeluaran berhasil dihapus dan jurnal dibalik.")
             st.rerun()
         else:
             st.error("Gagal menghapus transaksi.")
+else:
+    st.info("Belum ada data pengeluaran.")
 
 
 # ---------------- Fungsi Hapus Transaksi ----------------
