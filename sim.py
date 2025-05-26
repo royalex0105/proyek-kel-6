@@ -249,7 +249,8 @@ def pengeluaran():
         st.rerun()
 
     # --- Tampilkan Riwayat dan Hapus ---
-  st.markdown("### Riwayat Pengeluaran")
+
+st.markdown("### Riwayat Pengeluaran")
 
 try:
     df_pengeluaran = load_data("pengeluaran.csv", st.session_state['username'])
